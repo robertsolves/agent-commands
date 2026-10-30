@@ -1,0 +1,4 @@
+interface:
+  display_name: "ui-logic-separation"
+  short_description: "Keep UI code apart from business code"
+  default_prompt: "Use $ui-logic-separation to decide where this screen's code goes and keep its layout free of logic."

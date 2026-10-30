@@ -1,0 +1,4 @@
+interface:
+  display_name: "kilo"
+  short_description: "Run the kilo command"
+  default_prompt: "Use $kilo to run the kilo command."

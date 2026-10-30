@@ -1,0 +1,4 @@
+interface:
+  display_name: "setup-project-facts"
+  short_description: "Run the setup-project-facts command"
+  default_prompt: "Use $setup-project-facts to run the setup-project-facts command."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "find-unfinished"
+  short_description: "Run the find-unfinished command"
+  default_prompt: "Use $find-unfinished to run the find-unfinished command."

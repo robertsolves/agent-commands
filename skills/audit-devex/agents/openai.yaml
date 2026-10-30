@@ -1,0 +1,4 @@
+interface:
+  display_name: "audit-devex"
+  short_description: "Run the audit-devex command"
+  default_prompt: "Use $audit-devex to run the audit-devex command."

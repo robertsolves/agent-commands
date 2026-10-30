@@ -1,0 +1,4 @@
+interface:
+  display_name: "find-confusing-things"
+  short_description: "Run the find-confusing-things command"
+  default_prompt: "Use $find-confusing-things to run the find-confusing-things command."

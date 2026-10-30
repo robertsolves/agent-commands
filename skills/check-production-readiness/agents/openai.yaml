@@ -1,0 +1,4 @@
+interface:
+  display_name: "check-production-readiness"
+  short_description: "Run the check-production-readiness command"
+  default_prompt: "Use $check-production-readiness to run the check-production-readiness command."

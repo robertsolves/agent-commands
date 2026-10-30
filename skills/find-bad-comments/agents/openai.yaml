@@ -1,0 +1,4 @@
+interface:
+  display_name: "find-bad-comments"
+  short_description: "Run the find-bad-comments command"
+  default_prompt: "Use $find-bad-comments to run the find-bad-comments command."

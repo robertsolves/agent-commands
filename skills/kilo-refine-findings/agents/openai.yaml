@@ -1,0 +1,4 @@
+interface:
+  display_name: "kilo-refine-findings"
+  short_description: "Run the kilo-refine-findings command"
+  default_prompt: "Use $kilo-refine-findings to run the kilo-refine-findings command."

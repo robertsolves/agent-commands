@@ -1,0 +1,4 @@
+interface:
+  display_name: "find-dead-code"
+  short_description: "Run the find-dead-code command"
+  default_prompt: "Use $find-dead-code to run the find-dead-code command."

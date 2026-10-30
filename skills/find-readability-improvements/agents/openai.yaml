@@ -1,0 +1,4 @@
+interface:
+  display_name: "find-readability-improvements"
+  short_description: "Run the find-readability-improvements command"
+  default_prompt: "Use $find-readability-improvements to run the find-readability-improvements command."

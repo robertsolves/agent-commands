@@ -1,0 +1,4 @@
+interface:
+  display_name: "find-compliance-issues"
+  short_description: "Run the find-compliance-issues command"
+  default_prompt: "Use $find-compliance-issues to run the find-compliance-issues command."

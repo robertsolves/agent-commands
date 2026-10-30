@@ -1,0 +1,4 @@
+interface:
+  display_name: "unify-patterns"
+  short_description: "Run the unify-patterns command"
+  default_prompt: "Use $unify-patterns to run the unify-patterns command."

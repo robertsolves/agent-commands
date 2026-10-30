@@ -1,0 +1,4 @@
+interface:
+  display_name: "audit-slop"
+  short_description: "Run the audit-slop command"
+  default_prompt: "Use $audit-slop to run the audit-slop command."

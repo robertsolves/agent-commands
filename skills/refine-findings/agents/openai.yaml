@@ -1,0 +1,4 @@
+interface:
+  display_name: "refine-findings"
+  short_description: "Run the refine-findings command"
+  default_prompt: "Use $refine-findings to run the refine-findings command."

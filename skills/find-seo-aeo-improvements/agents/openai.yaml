@@ -1,0 +1,4 @@
+interface:
+  display_name: "find-seo-aeo-improvements"
+  short_description: "Run the find-seo-aeo-improvements command"
+  default_prompt: "Use $find-seo-aeo-improvements to run the find-seo-aeo-improvements command."

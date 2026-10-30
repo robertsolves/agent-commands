@@ -1,0 +1,4 @@
+interface:
+  display_name: "find-bandaids"
+  short_description: "Run the find-bandaids command"
+  default_prompt: "Use $find-bandaids to run the find-bandaids command."

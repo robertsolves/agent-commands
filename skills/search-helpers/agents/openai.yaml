@@ -1,0 +1,4 @@
+interface:
+  display_name: "search-helpers"
+  short_description: "Capped symbol search, grep and doc-drift scripts"
+  default_prompt: "Use $search-helpers to search the repo without flooding the context."

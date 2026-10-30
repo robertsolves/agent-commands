@@ -1,0 +1,4 @@
+interface:
+  display_name: "fix-sentry"
+  short_description: "Run the fix-sentry command"
+  default_prompt: "Use $fix-sentry to run the fix-sentry command."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "find-stale-references"
+  short_description: "Run the find-stale-references command"
+  default_prompt: "Use $find-stale-references to run the find-stale-references command."

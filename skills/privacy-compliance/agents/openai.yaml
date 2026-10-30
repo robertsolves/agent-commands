@@ -1,0 +1,4 @@
+interface:
+  display_name: "privacy-compliance"
+  short_description: "The privacy baseline a change must keep"
+  default_prompt: "Use $privacy-compliance to check this change keeps the privacy baseline for personal data, consent and deletion."

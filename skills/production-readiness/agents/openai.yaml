@@ -1,0 +1,4 @@
+interface:
+  display_name: "production-readiness"
+  short_description: "The standard for safe-for-real-users changes"
+  default_prompt: "Use $production-readiness to check this change against the launch standard, with evidence per item."

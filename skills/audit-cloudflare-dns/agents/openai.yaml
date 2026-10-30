@@ -1,0 +1,4 @@
+interface:
+  display_name: "audit-cloudflare-dns"
+  short_description: "Run the audit-cloudflare-dns command"
+  default_prompt: "Use $audit-cloudflare-dns to run the audit-cloudflare-dns command."
