@@ -420,7 +420,7 @@ if [ "$agents_md" = 1 ]; then
   block="$begin_mark
 ## Agent commands from $OWNER/$REPO
 
-Each workflow lives in \`.agents/commands/<name>.md\`. They came from \`install.sh\`, and re-running it overwrites them, so put anything about this project in \`.agents/project-facts.md\` instead. The commands read it.
+Each workflow lives in \`.agents/commands/<name>.md\`. They came from \`install.sh\`, and re-running it overwrites them, so put anything about this project in \`.agents/project-facts.md\` instead. The commands read it. As you work, file anything you notice and don't fix in the records the **Records** bullet there names (usually \`BUGS.md\` and \`TODO.md\`), without being asked.
 
 Run one as \`/name\` in Claude Code, OpenCode, Kilo, Gemini CLI, Antigravity, Cursor, Copilot and Windsurf, as \`\$name\` in Codex, or as \`/skill:name\` in Freebuff. In any other agent, ask it to open \`.agents/commands/<name>.md\` and follow it.
 
