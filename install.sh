@@ -133,6 +133,7 @@ if [ -f "$options_file" ] && [ "$uninstall" = 0 ]; then
     [ -n "$saved" ] && tools="$saved"
   fi
   [ -z "$only" ] && only="$(sed -n 's/^only=//p' "$options_file")"
+  grep -qx 'agents_md=0' "$options_file" && agents_md=0
 fi
 
 has() { command -v "$1" >/dev/null 2>&1; }
@@ -417,6 +418,11 @@ if [ "$agents_md" = 1 ]; then
   strip_agents_md_block
   list_line=""
   for n in $commands; do selected "$n" && list_line="$list_line \`/$n\`"; done
+  if [ -f .agents/kits/agent-commands/kit.sh ]; then
+    update_cmd="bash .agents/kits/agent-commands/kit.sh update"
+  else
+    update_cmd="curl -fsSL https://raw.githubusercontent.com/$OWNER/agent-commands/main/kit.sh | bash -s -- update"
+  fi
   block="$begin_mark
 ## Agent commands from $OWNER/$REPO
 
@@ -425,6 +431,8 @@ Each workflow lives in \`.agents/commands/<name>.md\`. They came from \`install.
 Run one as \`/name\` in Claude Code, OpenCode, Kilo, Gemini CLI, Antigravity, Cursor, Copilot and Windsurf, as \`\$name\` in Codex, or as \`/skill:name\` in Freebuff. In any other agent, ask it to open \`.agents/commands/<name>.md\` and follow it.
 
 Commands:$list_line
+
+To update every installed kit and relink new or removed commands, run \`$update_cmd\` and commit the result.
 $end_mark"
   if [ "$dry" = 1 ]; then say "  would: add the $REPO block to AGENTS.md"; else
     [ -f AGENTS.md ] && [ -s AGENTS.md ] && printf '\n' >> AGENTS.md
@@ -435,7 +443,7 @@ fi
 if [ "$dry" = 0 ]; then
   mkdir -p "$manifest_dir"
   printf '%s\n' "$installed" | sed '/^$/d' > "$manifest"
-  printf 'tools=%s\nonly=%s\n' "$tools" "$only" > "$options_file"
+  printf 'tools=%s\nonly=%s\nagents_md=%s\n' "$tools" "$only" "$agents_md" > "$options_file"
 fi
 
 count="$(printf '%s\n' "$installed" | sed '/^$/d' | wc -l | tr -d ' ')"

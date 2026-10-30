@@ -68,7 +68,13 @@ If you'd rather have updates come in as a reviewable git change, add the kits as
 curl -fsSL https://raw.githubusercontent.com/robertsolves/agent-commands/main/kit.sh | bash -s -- add commands dart --submodule
 ```
 
-Each kit then lives in `.agents/kits/<repo>`, and the project links to its files instead of copying them. `update` moves the submodules to the latest commit and adds links for any new commands. You see the whole change in `git diff`, and nothing changes until you commit it. Teammates clone with `--recurse-submodules`. On Windows, turn on `git config core.symlinks true` first.
+Each kit then lives in `.agents/kits/<repo>`, and the project links to its files instead of copying them. `update` moves the submodules to the latest commit and adds links for any new commands. Once agent-commands is a submodule, the update runs from inside the project, with no download:
+
+```sh
+bash .agents/kits/agent-commands/kit.sh update
+```
+
+You see the whole change in `git diff`, and nothing changes until you commit it. Teammates clone with `--recurse-submodules`. On Windows, turn on `git config core.symlinks true` first.
 
 To have it happen by itself, `kit.sh autoupdate` writes a GitHub Action that runs `update` every Monday and opens a pull request. You need to allow Actions to create pull requests in the repo settings.
 
