@@ -13,6 +13,10 @@
 #
 # Commands:
 #   add <kits...> [installer options]   install into the project (template always goes first)
+#   add <kits...> --submodule           same, but each kit becomes a git submodule in .agents/kits/
+#                                       and the project links to it, so `update` moves it forward
+#   update                              bring every installed kit up to date (both modes)
+#   autoupdate                          write a weekly GitHub Action that runs `update` and opens a PR
 #   remove <kits...>                    uninstall (the template has no uninstall: its files are yours)
 #   list                                show the kits
 #   setup                               add the agent-kits skill to your user folders, so in any
@@ -51,7 +55,7 @@ EOF
 
 usage() {
   cat <<'EOF'
-Usage: kit.sh add <kits...> [options] | remove <kits...> | list | setup
+Usage: kit.sh add <kits...> [--submodule] [options] | update | autoupdate | remove <kits...> | list | setup
 
 Kits:
 EOF
@@ -59,6 +63,9 @@ EOF
   cat <<'EOF'
 
   add      install the kits into this project (the template goes first)
+           --submodule keeps each kit as a git submodule in .agents/kits/
+  update   bring every installed kit up to date
+  autoupdate  write a weekly GitHub Action that runs update and opens a PR
   remove   uninstall kits (the template has no uninstall: its files are yours)
   setup    add the agent-kits skill to your user folders, so in any project
            you can ask "add the dart kit" or type /agent-kits
@@ -72,7 +79,7 @@ run_installer() {
   local repo="$1" script="$2"; shift 2
   local here
   here="$(cd "$(dirname "${BASH_SOURCE[0]:-.}")" 2>/dev/null && pwd || true)"
-  for dir in "${KITS_DIR:-}" "$here/.."; do
+  for dir in "$project/.agents/kits" "${KITS_DIR:-}" "$here/.."; do
     if [ -n "$dir" ] && [ -f "$dir/$repo/$script" ]; then
       bash "$dir/$repo/$script" "$@"
       return
@@ -85,10 +92,12 @@ run_installer() {
 cmd="${1:-}"
 [ $# -gt 0 ] && shift
 
-kits="" opts=()
+kits="" opts=() submodule=0 project=""
 while [ $# -gt 0 ]; do
   case "$1" in
-    --project|--tools|--only) opts+=("$1" "${2:?$1 needs a value}"); shift ;;
+    --submodule) submodule=1 ;;
+    --project) project="${2:?--project needs a directory}"; opts+=("$1" "$2"); shift ;;
+    --tools|--only) opts+=("$1" "${2:?$1 needs a value}"); shift ;;
     -*) opts+=("$1") ;;
     all) kits="agent-project-template agent-commands dart-agent-kit prompt-trials" ;;
     *) r="$(repo_of "$1")" || die "unknown kit: $1 (try: kit.sh list)"
@@ -96,6 +105,27 @@ while [ $# -gt 0 ]; do
   esac
   shift
 done
+
+[ -n "$project" ] || project="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+project="$(cd "$project" && pwd)"
+GIT_BASE="${KITS_GIT_BASE:-https://github.com/$OWNER}"
+
+add_submodule() { # put a kit in .agents/kits/<repo> as a git submodule, once
+  local repo="$1" path=".agents/kits/$1"
+  [ -e "$project/$path" ] && return 0
+  git -C "$project" rev-parse --git-dir >/dev/null 2>&1 || die "--submodule needs the project to be a git repo"
+  git -C "$project" -c protocol.file.allow=always submodule add -q -b "$BRANCH" "$GIT_BASE/$repo.git" "$path"
+  echo "Added $path as a submodule."
+}
+
+drop_submodule() {
+  local path=".agents/kits/$1"
+  [ -e "$project/$path" ] || return 0
+  git -C "$project" submodule deinit -q -f "$path"
+  git -C "$project" rm -q -f "$path"
+  rm -rf "$(git -C "$project" rev-parse --git-dir)/modules/$path"
+  echo "Removed the $path submodule."
+}
 
 case "$cmd" in
   add)
@@ -111,8 +141,59 @@ case "$cmd" in
     for repo in $kits; do
       [ "$repo" = agent-project-template ] && continue
       echo; echo "== $repo"
+      [ "$submodule" = 1 ] && add_submodule "$repo"
       run_installer "$repo" install.sh ${opts[@]+"${opts[@]}"}
     done
+    [ "$submodule" = 1 ] && echo && echo "Commit .gitmodules and .agents/. Teammates clone with --recurse-submodules (or run git submodule update --init)."
+    ;;
+  update)
+    found=0
+    for manifest in "$project"/.agents/.installed/*.txt; do
+      [ -f "$manifest" ] || continue
+      repo="$(basename "$manifest" .txt)"
+      found=1
+      echo "== $repo"
+      if [ -e "$project/.agents/kits/$repo" ]; then
+        git -C "$project" -c protocol.file.allow=always submodule update -q --init --remote ".agents/kits/$repo"
+        echo "Moved .agents/kits/$repo to the latest $BRANCH."
+      fi
+      run_installer "$repo" install.sh --project "$project" ${opts[@]+"${opts[@]}"}
+    done
+    [ "$found" = 1 ] || die "no kits installed here (nothing in .agents/.installed/)"
+    echo; echo "The template kit is never updated: its files are yours. Review the changes with git diff and commit."
+    ;;
+  autoupdate)
+    wf="$project/.github/workflows/agent-kits-update.yml"
+    [ -e "$wf" ] && die "$wf already exists"
+    mkdir -p "$(dirname "$wf")"
+    cat > "$wf" <<'YAML'
+# Weekly: bring the robertsolves agent kits up to date and open a PR with the changes.
+# Needs Settings > Actions > General > "Allow GitHub Actions to create and approve pull requests".
+name: Update agent kits
+on:
+  schedule:
+    - cron: "0 3 * * 1"
+  workflow_dispatch:
+permissions:
+  contents: write
+  pull-requests: write
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - run: sudo apt-get install -y ripgrep
+      - run: curl -fsSL https://raw.githubusercontent.com/robertsolves/agent-commands/main/kit.sh | bash -s -- update
+      - uses: peter-evans/create-pull-request@v7
+        with:
+          branch: agent-kits-update
+          title: Update agent kits
+          commit-message: Update agent kits
+          body: Ran `kit.sh update`. Check the diff before merging.
+YAML
+    echo "Wrote ${wf#"$project"/}. Commit it, and allow Actions to open PRs in the repo settings."
     ;;
   remove)
     [ -n "$kits" ] || die "name at least one kit to remove"
@@ -120,6 +201,7 @@ case "$cmd" in
       if [ "$repo" = agent-project-template ]; then echo "Skipping the template: its files are yours now. Delete what you don't want."; continue; fi
       echo "== $repo"
       run_installer "$repo" install.sh --uninstall ${opts[@]+"${opts[@]}"}
+      drop_submodule "$repo"
     done
     ;;
   list)

@@ -119,6 +119,22 @@ project="$(cd "$project" && pwd)"
 [ "$project" = "$src" ] && die "run this from (or point --project at) the project you want the commands in, not this repo"
 cd "$project"
 
+# When this repo sits inside the project (a git submodule at .agents/kits/<repo>),
+# link to its files instead of copying them, so updating the submodule updates
+# the commands. --copy turns this off.
+linked=0
+case "$src/" in "$project/"*) [ "$mode" = link ] && linked=1 ;; esac
+
+# Re-runs (kit.sh update) reuse the choices of the first install.
+options_file=".agents/.installed/$REPO.options"
+if [ -f "$options_file" ] && [ "$uninstall" = 0 ]; then
+  if [ "$tools" = auto ]; then
+    saved="$(sed -n 's/^tools=//p' "$options_file")"
+    [ -n "$saved" ] && tools="$saved"
+  fi
+  [ -z "$only" ] && only="$(sed -n 's/^only=//p' "$options_file")"
+fi
+
 has() { command -v "$1" >/dev/null 2>&1; }
 want() { case ",$tools," in *",$1,"*|*",all,"*) return 0 ;; *) return 1 ;; esac; }
 
@@ -207,6 +223,7 @@ if [ "$uninstall" = 1 ]; then
   [ -f "$manifest" ] || die "nothing to uninstall: $project/$manifest is missing"
   say "Removing $OWNER/$REPO from $project"
   remove_previous
+  rm -f "$options_file"
   strip_agents_md_block
   for d in .agents/commands .agents/skills .agents/agents .agents/rules "$manifest_dir" \
            .claude/commands .claude/skills .claude/agents .claude/rules .opencode/commands .opencode/agents \
@@ -244,12 +261,22 @@ $dst"
 record() { installed="$installed
 $1"; }
 
-copy_in() { # copy a file or folder from the repo into .agents/
+relpath() { # relative path from directory $1 to path $2 (both absolute)
+  local from="$1" to="$2" up=""
+  while [ "${to#"$from"/}" = "$to" ]; do from="$(dirname "$from")"; up="../$up"; done
+  printf '%s%s' "$up" "${to#"$from"/}"
+}
+
+copy_in() { # copy (or, from a submodule, link) a file or folder from the repo into .agents/
   local from="$1" dst="$2"
   free_to_write "$dst" || return 0
   act mkdir -p "$(dirname "$dst")"
   act rm -rf "$dst"
-  act cp -R "$from" "$dst"
+  if [ "$linked" = 1 ]; then
+    act ln -s "$(relpath "$project/$(dirname "$dst")" "$from")" "$dst"
+  else
+    act cp -R "$from" "$dst"
+  fi
   record "$dst"
 }
 
@@ -292,6 +319,7 @@ typed_after='Anything the user typed after the command name is its $ARGUMENTS.'
 
 
 say "Installing $OWNER/$REPO into $project"
+[ "$linked" = 1 ] && say "Linking to ${src#"$project"/} (submodule), so updating it updates the commands."
 say "Tools: $tools"
 remove_previous
 
@@ -407,6 +435,7 @@ fi
 if [ "$dry" = 0 ]; then
   mkdir -p "$manifest_dir"
   printf '%s\n' "$installed" | sed '/^$/d' > "$manifest"
+  printf 'tools=%s\nonly=%s\n' "$tools" "$only" > "$options_file"
 fi
 
 count="$(printf '%s\n' "$installed" | sed '/^$/d' | wc -l | tr -d ' ')"
