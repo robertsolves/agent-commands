@@ -38,14 +38,13 @@ You need bash and [ripgrep](https://github.com/BurntSushi/ripgrep). Most command
 
 ## Install several kits at once
 
-This repo is one of four kits that work together:
+This repo is one of three kits that work together:
 
 | Kit | What it adds |
 |---|---|
 | `template` | [agent-project-template](https://github.com/robertsolves/agent-project-template): `AGENTS.md`, folder guides, `BUGS.md`, `TODO.md`, a changelog agents can only append to |
 | `commands` | [agent-commands](https://github.com/robertsolves/agent-commands): cleanup, audit and review commands for any language |
 | `dart` | [dart-agent-kit](https://github.com/robertsolves/dart-agent-kit): Dart and Flutter commands and a reviewer subagent |
-| `trials` | [prompt-trials](https://github.com/robertsolves/prompt-trials): test your own commands on a free model |
 
 Pick any mix, in one line:
 
@@ -53,7 +52,27 @@ Pick any mix, in one line:
 curl -fsSL https://raw.githubusercontent.com/robertsolves/agent-commands/main/kit.sh | bash -s -- add template commands dart
 ```
 
-`all` installs all four. `remove dart` takes one out again. They share `.agents/` and `.agents/project-facts.md`, and each keeps its own list of the files it wrote, so adding or removing one never touches the others.
+`all` installs all three. `remove dart` takes one out again. They share `.agents/` and `.agents/project-facts.md`, and each keeps its own list of the files it wrote, so adding or removing one never touches the others.
+
+### Keep them up to date
+
+Each kit remembers the agents and commands you picked, so updating is one line:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/robertsolves/agent-commands/main/kit.sh | bash -s -- update
+```
+
+If you'd rather have updates come in as a reviewable git change, add the kits as submodules instead:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/robertsolves/agent-commands/main/kit.sh | bash -s -- add commands dart --submodule
+```
+
+Each kit then lives in `.agents/kits/<repo>`, and the project links to its files instead of copying them. `update` moves the submodules to the latest commit and adds links for any new commands. You see the whole change in `git diff`, and nothing changes until you commit it. Teammates clone with `--recurse-submodules`. On Windows, turn on `git config core.symlinks true` first.
+
+To have it happen by itself, `kit.sh autoupdate` writes a GitHub Action that runs `update` every Monday and opens a pull request. You need to allow Actions to create pull requests in the repo settings.
+
+The template is never updated, because its files are yours to edit.
 
 ### Or just ask your agent
 
@@ -174,12 +193,11 @@ Don't edit the installed commands directly, because the next update overwrites t
 
 A command is a markdown file in `commands/` with a one-line `description` in the frontmatter. After adding or renaming one, run `python3 scripts/sync_wrappers.py` to regenerate the skill wrappers. `--check` tells you if any are out of date.
 
-The commands are written so that a cheap model can follow them: numbered steps, an exact shell command where there is one, a "Done when" line on every step and a check at the end. [prompt-trials](https://github.com/robertsolves/prompt-trials) is how I test that. It runs a weak free model on a command against a planted bug and checks whether it found it.
+The commands are written so that a cheap model can follow them: numbered steps, an exact shell command where there is one, a "Done when" line on every step and a check at the end.
 
 ## Related
 
 - [dart-agent-kit](https://github.com/robertsolves/dart-agent-kit): Dart and Flutter commands, a reviewer subagent and the Effective Dart rules as a skill.
-- [prompt-trials](https://github.com/robertsolves/prompt-trials): test your commands on weak models before you trust them.
 
 ## Licence
 

@@ -8,7 +8,6 @@
 #   template  agent-project-template  AGENTS.md, folder guides, BUGS/TODO/CHANGELOG, scripts
 #   commands  agent-commands          cleanup, audit and review commands for any language
 #   dart      dart-agent-kit          Dart and Flutter commands, reviewer subagent, Effective Dart
-#   trials    prompt-trials           test your own commands on a free model
 #   all       every kit above
 #
 # Commands:
@@ -38,7 +37,6 @@ repo_of() {
     template|agent-project-template) echo agent-project-template ;;
     commands|agent-commands) echo agent-commands ;;
     dart|dart-agent-kit) echo dart-agent-kit ;;
-    trials|prompt-trials) echo prompt-trials ;;
     *) return 1 ;;
   esac
 }
@@ -48,7 +46,6 @@ kit_list() {
   template  agent-project-template  AGENTS.md, folder guides, BUGS/TODO/CHANGELOG, scripts
   commands  agent-commands          cleanup, audit and review commands for any language
   dart      dart-agent-kit          Dart and Flutter commands, reviewer subagent, Effective Dart
-  trials    prompt-trials           test your own commands on a free model
   all       every kit above
 EOF
 }
@@ -99,7 +96,7 @@ while [ $# -gt 0 ]; do
     --project) project="${2:?--project needs a directory}"; opts+=("$1" "$2"); shift ;;
     --tools|--only) opts+=("$1" "${2:?$1 needs a value}"); shift ;;
     -*) opts+=("$1") ;;
-    all) kits="agent-project-template agent-commands dart-agent-kit prompt-trials" ;;
+    all) kits="agent-project-template agent-commands dart-agent-kit" ;;
     *) r="$(repo_of "$1")" || die "unknown kit: $1 (try: kit.sh list)"
        case " $kits " in *" $r "*) ;; *) kits="$kits $r" ;; esac ;;
   esac

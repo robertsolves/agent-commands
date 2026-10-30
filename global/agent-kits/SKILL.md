@@ -1,6 +1,6 @@
 ---
 name: agent-kits
-description: "Adds Robert Solves agent kits to the current project: the agent-project-template (AGENTS.md, folder guides, BUGS.md, TODO.md, write-only CHANGELOG.md, helper scripts), agent-commands (cleanup, audit and review slash commands for any language), dart-agent-kit (Dart and Flutter commands, reviewer subagent, Effective Dart rules) and prompt-trials (test commands on a free model). Any mix works together. Use when the user asks to add, install, set up, update or remove any of these, or says something like \"add the agent commands\", \"set this project up for agents\" or \"add the dart kit\"."
+description: "Adds Robert Solves agent kits to the current project: the agent-project-template (AGENTS.md, folder guides, BUGS.md, TODO.md, write-only CHANGELOG.md, helper scripts), agent-commands (cleanup, audit and review slash commands for any language) and dart-agent-kit (Dart and Flutter commands, reviewer subagent, Effective Dart rules, strict analysis_options). Any mix works together. Use when the user asks to add, install, set up, update or remove any of these, or says something like \"add the agent commands\", \"set this project up for agents\" or \"add the dart kit\"."
 ---
 
 # Add agent kits to this project
@@ -10,7 +10,6 @@ description: "Adds Robert Solves agent kits to the current project: the agent-pr
 | agent-project-template | `template` | `AGENTS.md` with `CLAUDE.md`/`GEMINI.md` imports, folder guides, `BUGS.md`, `TODO.md`, `MANUAL_TODO.md`, a changelog agents can only append to, git hooks, search scripts |
 | agent-commands | `commands` | `/find-bandaids`, `/find-dead-code`, `/find-exploits`, `/audit-slop`, `/update-docs` and about 25 more, for any language |
 | dart-agent-kit | `dart` | `/dart-audit-code`, `/dart-improve-code`, `/dart-clean-packages`, the `dart-reviewer` subagent, Effective Dart as a skill |
-| prompt-trials | `trials` | `/improve-prompts`, `/improve-agent-prompts` and a harness that tests a command on a free model |
 
 ## Step 1: Decide which kits
 
@@ -18,7 +17,6 @@ Use the kits the user named. If they only said "set this project up" or similar,
 
 - `template commands` for any project that has no `AGENTS.md` yet, else `commands`
 - add `dart` when the project has a `pubspec.yaml`
-- add `trials` only when the user writes their own agent commands
 
 Say which kits you'll add in one line, and go ahead unless the user said to ask first.
 

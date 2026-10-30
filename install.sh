@@ -7,8 +7,8 @@
 #   ./install.sh --project ~/code/my-app --only find-bandaids,audit-slop
 #
 # ./install.sh --help lists every option. Needs bash 3.2+, plus curl and tar
-# when it is piped from curl. Works the same in all three repos
-# (agent-commands, dart-agent-kit, prompt-trials); only REPO differs.
+# when it is piped from curl. Works the same in both repos
+# (agent-commands, dart-agent-kit); only REPO differs.
 
 set -euo pipefail
 
