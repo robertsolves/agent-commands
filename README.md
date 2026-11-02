@@ -90,6 +90,21 @@ curl -fsSL https://raw.githubusercontent.com/robertsolves/agent-commands/main/ki
 
 It adds a small `agent-kits` skill to your user folders (`~/.claude/skills`, `~/.agents/skills`, and Antigravity's if you have it). After that, in any project, tell Claude Code, Codex, Cursor, Gemini CLI or OpenCode "add the agent commands and the dart kit", or type `/agent-kits`. The agent picks the kits and runs the line above for you.
 
+### Install globally
+
+To have the commands in every project without installing them one by one, clone the repo once and link it into your user folders:
+
+```sh
+git clone https://github.com/robertsolves/agent-commands.git ~/agent-commands
+mkdir -p ~/.claude/commands ~/.agents/skills
+for f in ~/agent-commands/commands/*.md; do ln -sf "$f" ~/.claude/commands/; done    # Claude Code, /name
+for d in ~/agent-commands/skills/*/; do ln -sfn "${d%/}" ~/.agents/skills/; done      # Codex and other skill readers
+```
+
+Update with `git -C ~/agent-commands pull`. The links follow it, so there is nothing to reinstall. Remove one with `rm ~/.claude/commands/<name>.md`.
+
+The commands still read their facts from the project you run them in, so run `/setup-project-facts` once per project. If you want a project to carry its own copy (so teammates get it too), use the per-project install above instead. For just the `agent-kits` skill on your machine, run the `setup` line above.
+
 ## Then fill in your project facts
 
 The commands never assume your paths. Where is your bug list? How do you run the tests? Which odd-looking workaround is on purpose? They read the answers from one file, `.agents/project-facts.md`. The installer creates it from a template.
