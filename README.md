@@ -168,6 +168,8 @@ Keeping things tidy:
 | `/unify-patterns` | Gives every recurring job one pattern and every kind of file one layout, so you can read one and skim the rest. |
 | `/update-docs` | Updates the core docs to match the code. Shows you the diff list first. |
 | `/improve-markdowns` | Rewrites markdown files to be clearer and shorter, and keeps `CLAUDE.md` and `README.md` lean. |
+| `/improve-prompts` | Improves a prompt as a controlled experiment: baseline, one hypothesis, one change, rerun, decide by a rule fixed in advance. |
+| `/improve-agent-prompts` | Rewrites every agent prompt so a weak free coding agent can follow it. Changes how a prompt is written, never what it does. |
 | `/setup-project-facts` | Fills in `.agents/project-facts.md`. |
 
 Handing work to a free model:

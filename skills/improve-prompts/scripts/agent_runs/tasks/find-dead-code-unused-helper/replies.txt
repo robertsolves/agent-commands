@@ -1,0 +1,2 @@
+# Turn 2: the owner picks the planted finding.
+Remove `streakRepairsLeftAfter` only, leave everything else as it is.
