@@ -133,6 +133,7 @@ Cleaning up after agents:
 | `/audit-slop` | Read-only report on the mistakes agents keep making: made-up APIs, swallowed errors, tests that test nothing. |
 | `/find-unfinished` | Reads recent session transcripts and git state to find work an interrupted session never finished. |
 | `/resume-session` | Picks up a session from Claude Code, Codex, Gemini CLI, OpenCode, Kilo or Antigravity and carries on in whatever agent you're using now. |
+| `/split-commits` | Splits a big pile of uncommitted changes from several sessions into one commit per piece of work, by matching each changed hunk to the transcript that wrote it. |
 | `/refine-findings` | Checks every entry in a bug list or audit against the code. Deletes the wrong ones and fixes the rest. |
 
 Finding problems:
