@@ -1,15 +1,14 @@
 ---
 name: agent-kits
-description: "Adds Robert Solves agent kits to the current project: the agent-project-template (AGENTS.md, folder guides, BUGS.md, TODO.md, write-only CHANGELOG.md, helper scripts), agent-commands (cleanup, audit and review slash commands for any language) and dart-agent-kit (Dart and Flutter commands, reviewer subagent, Effective Dart rules, strict analysis_options). Any mix works together. Use when the user asks to add, install, set up, update or remove any of these, or says something like \"add the agent commands\", \"set this project up for agents\" or \"add the dart kit\"."
+description: "Adds Robert Solves agent kits to the current project: the agent-project-template (AGENTS.md, folder guides, BUGS.md, TODO.md, write-only CHANGELOG.md, helper scripts), agent-commands (cleanup, audit and review slash commands for any language) dart-agent-kit (Dart and Flutter commands, reviewer subagent, Effective Dart rules, strict analysis_options) and agent-records-kit (BUGS.md, TODO.md, a changelog and a query log written through scripts). Any mix works together. Use when the user asks to add, install, set up, update or remove any of these, or says something like \"add the agent commands\", \"set this project up for agents\" or \"add the dart kit\"."
 ---
 
 # Add agent kits to this project
 
-| Kit | Short name | Gives the project |
-|---|---|---|
-| agent-project-template | `template` | `AGENTS.md` with `CLAUDE.md`/`GEMINI.md` imports, folder guides, `BUGS.md`, `TODO.md`, `MANUAL_TODO.md`, a changelog agents can only append to, git hooks, search scripts |
-| agent-commands | `commands` | `/find-bandaids`, `/find-dead-code`, `/find-exploits`, `/audit-slop`, `/update-docs` and about 25 more, for any language |
-| dart-agent-kit | `dart` | `/dart-audit-code`, `/dart-improve-code`, `/dart-clean-packages`, the `dart-reviewer` subagent, Effective Dart as a skill |
+- **agent-project-template** (`template`): `AGENTS.md` with `CLAUDE.md`/`GEMINI.md` imports, folder guides, `MANUAL_TODO.md`, git hooks, search scripts
+- **agent-commands** (`commands`): `/find-bandaids`, `/find-dead-code`, `/find-exploits`, `/audit-slop`, `/update-docs` and about 25 more, for any language
+- **dart-agent-kit** (`dart`): `/dart-audit-code`, `/dart-improve-code`, `/dart-clean-packages`, the `dart-reviewer` subagent, Effective Dart as a skill
+- **agent-records-kit** (`records`): `BUGS.md`, `TODO.md`, a changelog and a query log that agents write and read through scripts, with hooks that keep them out of the big files
 
 ## Step 1: Decide which kits
 

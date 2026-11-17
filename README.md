@@ -38,13 +38,12 @@ You need bash and [ripgrep](https://github.com/BurntSushi/ripgrep). Most command
 
 ## Install several kits at once
 
-This repo is one of three kits that work together:
+This repo is one of four kits that work together:
 
-| Kit | What it adds |
-|---|---|
-| `template` | [agent-project-template](https://github.com/robertsolves/agent-project-template): `AGENTS.md`, folder guides, `BUGS.md`, `TODO.md`, a changelog agents can only append to |
-| `commands` | [agent-commands](https://github.com/robertsolves/agent-commands): cleanup, audit and review commands for any language |
-| `dart` | [dart-agent-kit](https://github.com/robertsolves/dart-agent-kit): Dart and Flutter commands and a reviewer subagent |
+- `template`: [agent-project-template](https://github.com/robertsolves/agent-project-template): `AGENTS.md`, folder guides
+- `commands`: [agent-commands](https://github.com/robertsolves/agent-commands): cleanup, audit and review commands for any language
+- `dart`: [dart-agent-kit](https://github.com/robertsolves/dart-agent-kit): Dart and Flutter commands and a reviewer subagent
+- `records`: [agent-records-kit](https://github.com/robertsolves/agent-records-kit): `BUGS.md`, `TODO.md`, a changelog and a query log that agents write through scripts
 
 Pick any mix, in one line:
 
@@ -52,7 +51,7 @@ Pick any mix, in one line:
 curl -fsSL https://raw.githubusercontent.com/robertsolves/agent-commands/main/kit.sh | bash -s -- add template commands dart
 ```
 
-`all` installs all three. `remove dart` takes one out again. They share `.agents/` and `.agents/project-facts.md`, and each keeps its own list of the files it wrote, so adding or removing one never touches the others.
+`all` installs all four. `remove dart` takes one out again. They share `.agents/` and `.agents/project-facts.md`, and each keeps its own list of the files it wrote, so adding or removing one never touches the others.
 
 ### Keep them up to date
 
@@ -92,18 +91,16 @@ It adds a small `agent-kits` skill to your user folders (`~/.claude/skills`, `~/
 
 ### Install globally
 
-To have the commands in every project without installing them one by one, clone the repo once and link it into your user folders:
+To have the commands in every project, clone the repo once and link it into your user folders:
 
 ```sh
 git clone https://github.com/robertsolves/agent-commands.git ~/agent-commands
-mkdir -p ~/.claude/commands ~/.agents/skills
-for f in ~/agent-commands/commands/*.md; do ln -sf "$f" ~/.claude/commands/; done    # Claude Code, /name
-for d in ~/agent-commands/skills/*/; do ln -sfn "${d%/}" ~/.agents/skills/; done      # Codex and other skill readers
+~/agent-commands/global.sh install
 ```
 
-Update with `git -C ~/agent-commands pull`. The links follow it, so there is nothing to reinstall. Remove one with `rm ~/.claude/commands/<name>.md`.
+Claude Code gets the commands in `~/.claude/commands`. Codex and other skill readers get the skills in `~/.agents/skills`. Update with `git -C ~/agent-commands pull`, since the links follow the clone. Remove them with `~/agent-commands/global.sh uninstall`, which deletes only links that point into the clone. `global.sh list` shows what is linked.
 
-The commands still read their facts from the project you run them in, so run `/setup-project-facts` once per project. If you want a project to carry its own copy (so teammates get it too), use the per-project install above instead. For just the `agent-kits` skill on your machine, run the `setup` line above.
+The commands still read their facts from the project you run them in, so run `/setup-project-facts` once per project. If you want a project to carry its own copy so teammates get it too, use the per-project install above. For just the `agent-kits` skill, run the `setup` line above.
 
 ## Then fill in your project facts
 
@@ -209,7 +206,7 @@ Run the installer again to update. It keeps a list of every file it wrote in `.a
 ./install.sh --uninstall
 ```
 
-This removes everything on that list and the `AGENTS.md` section. It leaves `project-facts.md` alone, since you probably wrote some of it.
+This removes everything on that list and the `AGENTS.md` section. For the global install, use `~/agent-commands/global.sh uninstall` instead. It leaves `project-facts.md` alone, since you probably wrote some of it.
 
 Don't edit the installed commands directly, because the next update overwrites them. Put anything project-specific in `project-facts.md`. To change how a command works, fork this repo.
 
@@ -222,6 +219,7 @@ The commands are written so that a cheap model can follow them: numbered steps, 
 ## Related
 
 - [dart-agent-kit](https://github.com/robertsolves/dart-agent-kit): Dart and Flutter commands, a reviewer subagent and the Effective Dart rules as a skill.
+- [agent-records-kit](https://github.com/robertsolves/agent-records-kit): `BUGS.md`, `TODO.md`, a changelog and a query log that agents write through scripts.
 
 ## Licence
 
